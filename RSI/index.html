@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis</title>
+</head>
+<body>
+    <h1>Stock Analyzer</h1>
+    <form id="stockForm">
+        <label for="ticker">Enter Stock Ticker:</label>
+        <input type="text" id="ticker" name="ticker" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    <h2>Analysis Results</h2>
+    <p id="profit"></p>
+
+    <h3>Charts:</h3>
+    <img id="image1" src="" alt="Chart 1" style="display:none;">
+    <img id="image2" src="" alt="Chart 2" style="display:none;">
+
+    <script>
+        const form = document.getElementById('stockForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const ticker = document.getElementById('ticker').value;
+            
+            fetch('/api/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ticker })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display profit
+                document.getElementById('profit').textContent = 'Total Profit: $' + data.profit;
+
+                // Display images
+                document.getElementById('image1').src = data.images[0];
+                document.getElementById('image1').style.display = 'block';
+                document.getElementById('image2').src = data.images[1];
+                document.getElementById('image2').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
